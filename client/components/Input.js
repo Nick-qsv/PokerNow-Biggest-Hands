@@ -16,18 +16,19 @@ export const Input = () => {
   const uploadConfirm = () => {
     let handSizeArray = [];
     let sortedHandSize = [];
+
+    //Papaparse converts the CSV into JSON
     Papa.parse(document.getElementById("uploadFile").files[0], {
       download: true,
       header: true,
       skipEmptyLines: true,
       complete: function (results) {
-        console.log(results);
-
+        //Create an array of tuples of the largest hands
         for (let i = 0; i < results.data.length; i++) {
           const entry = results.data[i].entry;
           const regex = /\d+/;
+          //Check if they ran it twice
           if (entry.includes("collected") && entry.includes("second run")) {
-            console.log("THIS IS DOUBLE ENTRY", entry);
             let handTuple = {
               size: 0,
               index: 0,
@@ -39,6 +40,7 @@ export const Input = () => {
             handTuple.index = i;
             handSizeArray.push(handTuple);
             i++;
+            //If they only ran it once, then use this
           } else if (entry.includes("collected")) {
             let handTuple2 = {
               size: 0,
@@ -51,39 +53,34 @@ export const Input = () => {
             handTuple2.index = i;
             handSizeArray.push(handTuple2);
           }
-          //if it has collect log the index and push it into a new object
-          /*[{
-            size: 12.00
-            index: 16 (i)
-          }]*/
-          //organize the object by size using sort
-          //handSizeArray.sort((a,b) => b.size - a.size);
-          //now that we have a sorted array, we need to pull together the top 5 hands to start
-          //so a for loop from 0 - 4, grab the index from each entry
-          //lets do the above then worry about the rest
         }
+        //Sort the array of Tuples
         sortedHandSize = handSizeArray.sort((a, b) => b.size - a.size);
-        //now we have the top 10 hands and the index of each
-        //time to use that index to make a new object, i hop
-        //now we need to render this on the page.  can be a simple box render
-        //how do we get it out of this thing?
+
+        //Use the tuple array to quickly filter through the data
+        //Can change the value below to show more or less hands
         for (let j = 0; j < 25; j++) {
-          //can do a while loop
+          //Create the HTML elements that are going to be added
           const listDiv = document.getElementById("handsDiv");
           const divider = document.createElement("hr");
           const handNumber = document.createElement("h2");
           divider.classList.add("hr.dotted");
           handNumber.innerHTML = `Hand #${j + 1}`;
           listDiv.appendChild(handNumber);
+          //Find the index of the Biggest Hand
           let num = sortedHandSize[j].index;
+          //Loop through the data until you get to "Starting Hand", which indicates the hand is over
           while (!results.data[num].entry.includes("starting hand")) {
+            //Append each entry as a Div to the bottom of the page
             let entry = results.data[num].entry;
+            //Remove annoying @ blah stuff from the entry
             if (entry.includes("@") && !entry.includes("Player stacks:")) {
               let startRemove = entry.indexOf("@") - 1;
               let endRemove = startRemove + 13;
               entry = entry.substr(0, startRemove) + entry.substr(endRemove);
             }
             let entryDiv = document.createElement("div");
+            //Check for the type of action to color code it
             if (entry.includes("fold")) {
               entryDiv.classList.add("fold");
             } else if (entry.includes("raises")) {
