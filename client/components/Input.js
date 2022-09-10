@@ -118,7 +118,7 @@ export const Input = () => {
       id="inputDiv"
     >
       <Box component="h2" sx={{ fontFamily: "verdana" }}>
-        Upload your PokerNow CSV to see the Biggest Hands!
+        Upload your PokerNow Full Log to see the Biggest Hands!
       </Box>
       <Button
         variant="contained"
