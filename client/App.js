@@ -1,9 +1,10 @@
 import React from "react";
+import { Input } from "./components/Input";
 
 export const App = () => {
   return (
     <div>
-      <h1>Welcome to Nick's Website!</h1>
+      <Input />
     </div>
   );
 };

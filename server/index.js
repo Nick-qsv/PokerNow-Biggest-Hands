@@ -4,7 +4,7 @@ const app = require("./app");
 const init = async () => {
   try {
     app.listen(PORT, () =>
-      console.log(`WELCOME APRENDA TEAM TO PORT: ${PORT}`)
+      console.log(`WELCOME POKERNOW DEV TO PORT: ${PORT}`)
     );
   } catch (ex) {
     console.log(ex);
