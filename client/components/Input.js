@@ -1,18 +1,36 @@
-import React from "react";
+import React, { ChangeEvent, useState } from "react";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
+// import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import { useForm } from "react-hook-form";
+import Papa from "papaparse";
+import UploadFileIcon from "@mui/icons-material/UploadFile";
+
+// import { useForm } from "react-hook-form";
 
 export const Input = () => {
-  const {
-    register: register1,
-    handleSubmit: handleSubmit1,
-    formState: { errors },
-  } = useForm();
+  const [filename, setFilename] = useState("");
 
-  const onSubmit = async (data) => {};
+  const handleFileUpload = () => {
+    const file = document.getElementById("uploadFile").files[0];
+    const { name } = file;
+    setFilename(name);
+  };
+
+  const uploadConfirm = () => {
+    Papa.parse(document.getElementById("uploadFile").files[0], {
+      download: true,
+      header: true,
+      skipEmptyLines: true,
+      complete: function (results) {
+        console.log(results);
+        for (let i = 0; i < results.data.length; i++) {
+          results.data[i].entry;
+        }
+      },
+    });
+  };
+
   return (
     <Box
       sx={{
@@ -23,22 +41,36 @@ export const Input = () => {
         alignItems: "center",
         alignContent: "center",
       }}
-      component="form"
-      onSubmit={handleSubmit1(onSubmit)}
+      component="div"
       key={1}
     >
-      <h2>Put your PokerNow Link below to see the Biggest Hands!</h2>
-      <TextField
-        required
-        autoFocus
-        {...register1("PokerNow Link", { required: true })}
-        id="pokerNow_link"
-        label="PokerNow Link"
-        variant="standard"
-        sx={{ marginBottom: 3 }}
-      />
-      <Button type="submit" variant="contained">
-        Submit
+      <Box component="h2" sx={{ fontFamily: "verdana" }}>
+        Upload your PokerNow CSV to see the Biggest Hands!
+      </Box>
+      <Button
+        variant="contained"
+        component="label"
+        startIcon={<UploadFileIcon />}
+      >
+        Upload File
+        <input
+          type="file"
+          id="uploadFile"
+          accept=".csv"
+          hidden
+          onChange={handleFileUpload}
+        />
+      </Button>
+      <Box sx={{ marginTop: 1, fontFamily: "verdana" }}>{filename}</Box>
+      {/* <input type="file" id="uploadFile" accept=".csv" /> */}
+      <Button
+        id="uploadConfirm"
+        variant="contained"
+        color="success"
+        sx={{ marginTop: 2 }}
+        onClick={uploadConfirm}
+      >
+        See the Biggest Hands!
       </Button>
     </Box>
   );
