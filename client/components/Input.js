@@ -1,5 +1,4 @@
-import React, { ChangeEvent, useState } from "react";
-import Grid from "@mui/material/Grid";
+import React, { useState } from "react";
 import Box from "@mui/material/Box";
 // import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -18,19 +17,97 @@ export const Input = () => {
   };
 
   const uploadConfirm = () => {
+    let handSizeArray = [];
+    let sortedHandSize = [];
     Papa.parse(document.getElementById("uploadFile").files[0], {
       download: true,
       header: true,
       skipEmptyLines: true,
       complete: function (results) {
         console.log(results);
+
         for (let i = 0; i < results.data.length; i++) {
-          results.data[i].entry;
+          const entry = results.data[i].entry;
+          const regex = /\d+/;
+          if (entry.includes("collected") && entry.includes("second run")) {
+            console.log("THIS IS DOUBLE ENTRY", entry);
+            let handTuple = {
+              size: 0,
+              index: 0,
+            };
+            let startIndex = entry.indexOf("collected") + 9;
+            let subString = entry.slice(startIndex, startIndex + 11);
+            let total = parseInt(subString.match(regex)[0]) * 2;
+            handTuple.size = total;
+            handTuple.index = i;
+            handSizeArray.push(handTuple);
+            i++;
+          } else if (entry.includes("collected")) {
+            let handTuple2 = {
+              size: 0,
+              index: 0,
+            };
+            let startIndex = entry.indexOf("collected") + 9;
+            let subString = entry.slice(startIndex, startIndex + 11);
+            let total = parseInt(subString.match(regex)[0]);
+            handTuple2.size = total;
+            handTuple2.index = i;
+            handSizeArray.push(handTuple2);
+          }
+          //if it has collect log the index and push it into a new object
+          /*[{
+            size: 12.00
+            index: 16 (i)
+          }]*/
+          //organize the object by size using sort
+          //handSizeArray.sort((a,b) => b.size - a.size);
+          //now that we have a sorted array, we need to pull together the top 5 hands to start
+          //so a for loop from 0 - 4, grab the index from each entry
+          //lets do the above then worry about the rest
+        }
+        sortedHandSize = handSizeArray.sort((a, b) => b.size - a.size);
+        console.log("THIS IS HAND SIZE ARRAY", sortedHandSize);
+        //now we have the top 10 hands and the index of each
+        //time to use that index to make a new object, i hop
+        //now we need to render this on the page.  can be a simple box render
+        //how do we get it out of this thing?
+        for (let j = 0; j < 10; j++) {
+          //can do a while loop
+          const listDiv = document.getElementById("handsDiv");
+          const divider = document.createElement("hr");
+          divider.classList.add("hr.dotted");
+          let num = sortedHandSize[j].index;
+          console.log("THIS IS NUM", num);
+          while (!results.data[num].entry.includes("starting hand")) {
+            let entry = results.data[num].entry;
+            if (entry.includes("@") && !entry.includes("Player stacks:")) {
+              let startRemove = entry.indexOf("@") - 1;
+              let endRemove = startRemove + 13;
+              entry = entry.substr(0, startRemove) + entry.substr(endRemove);
+            }
+            let entryDiv = document.createElement("div");
+            if (entry.includes("fold")) {
+              entryDiv.classList.add("fold");
+            } else if (entry.includes("raises")) {
+              entryDiv.classList.add("callRaise");
+            } else if (entry.includes("calls")) {
+              entryDiv.classList.add("call");
+            } else if (entry.includes("collect")) {
+              entryDiv.classList.add("win");
+            } else if (entry.includes("bets")) {
+              entryDiv.classList.add("bet");
+            } else {
+              entryDiv.classList.add("entry");
+            }
+            entryDiv.innerHTML = entry;
+            listDiv.appendChild(entryDiv);
+            num++;
+          }
+          listDiv.appendChild(divider);
         }
       },
     });
   };
-
   return (
     <Box
       sx={{
@@ -43,6 +120,7 @@ export const Input = () => {
       }}
       component="div"
       key={1}
+      id="inputDiv"
     >
       <Box component="h2" sx={{ fontFamily: "verdana" }}>
         Upload your PokerNow CSV to see the Biggest Hands!
@@ -72,6 +150,7 @@ export const Input = () => {
       >
         See the Biggest Hands!
       </Button>
+      <Box id="handsDiv" component="div" sx={{ marginTop: 3 }}></Box>
     </Box>
   );
 };

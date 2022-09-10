@@ -1,0 +1,34 @@
+.entry {
+  margin-top: 6;
+  margin-bottom: 6;
+  font-family: Verdana;
+}
+
+.fold {
+  color: red;
+  font-family: Verdana;
+}
+
+.callRaise {
+  color: green;
+  font-family: Verdana;
+}
+
+.win {
+  color: rgb(159, 137, 11);
+  font-family: Verdana;
+}
+
+.bet {
+  color: rgb(199, 132, 8);
+  font-family: Verdana;
+}
+
+.call {
+  color: blue;
+  font-family: Verdana;
+}
+
+.hr.dotted {
+  border-top: 3px dotted #bbb;
+}
