@@ -1,11 +1,8 @@
 import React, { useState } from "react";
 import Box from "@mui/material/Box";
-// import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Papa from "papaparse";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
-
-// import { useForm } from "react-hook-form";
 
 export const Input = () => {
   const [filename, setFilename] = useState("");
@@ -66,18 +63,19 @@ export const Input = () => {
           //lets do the above then worry about the rest
         }
         sortedHandSize = handSizeArray.sort((a, b) => b.size - a.size);
-        console.log("THIS IS HAND SIZE ARRAY", sortedHandSize);
         //now we have the top 10 hands and the index of each
         //time to use that index to make a new object, i hop
         //now we need to render this on the page.  can be a simple box render
         //how do we get it out of this thing?
-        for (let j = 0; j < 10; j++) {
+        for (let j = 0; j < 25; j++) {
           //can do a while loop
           const listDiv = document.getElementById("handsDiv");
           const divider = document.createElement("hr");
+          const handNumber = document.createElement("h2");
           divider.classList.add("hr.dotted");
+          handNumber.innerHTML = `Hand #${j + 1}`;
+          listDiv.appendChild(handNumber);
           let num = sortedHandSize[j].index;
-          console.log("THIS IS NUM", num);
           while (!results.data[num].entry.includes("starting hand")) {
             let entry = results.data[num].entry;
             if (entry.includes("@") && !entry.includes("Player stacks:")) {
@@ -140,7 +138,6 @@ export const Input = () => {
         />
       </Button>
       <Box sx={{ marginTop: 1, fontFamily: "verdana" }}>{filename}</Box>
-      {/* <input type="file" id="uploadFile" accept=".csv" /> */}
       <Button
         id="uploadConfirm"
         variant="contained"
