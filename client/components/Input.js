@@ -72,7 +72,7 @@ export const Input = () => {
           //Loop through the data until you get to "Starting Hand", which indicates the hand is over
           while (!results.data[num].entry.includes("starting hand")) {
             //Append each entry as a Div to the bottom of the page
-            let entry = results.data[num].entry;
+            let entry = results.data[num - 2].entry;
             //Remove annoying @ blah stuff from the entry
             if (entry.includes("@") && !entry.includes("Player stacks:")) {
               let startRemove = entry.indexOf("@") - 1;
@@ -118,7 +118,7 @@ export const Input = () => {
       id="inputDiv"
     >
       <Box component="h2" sx={{ fontFamily: "verdana" }}>
-        Upload your PokerNow Full Log to see the Biggest Hands!
+        Upload your PokerNow Full-Log to see the Biggest Hands!
       </Box>
       <Button
         variant="contained"
