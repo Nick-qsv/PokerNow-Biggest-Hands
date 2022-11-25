@@ -59,7 +59,7 @@ export const Input = () => {
 
         //Use the tuple array to quickly filter through the data
         //Can change the value below to show more or less hands
-        for (let j = 0; j < 25; j++) {
+        for (let j = 0; j < 40; j++) {
           //Create the HTML elements that are going to be added
           const listDiv = document.getElementById("handsDiv");
           const divider = document.createElement("hr");
